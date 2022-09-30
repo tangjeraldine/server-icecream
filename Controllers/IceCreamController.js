@@ -7,7 +7,7 @@ router.use(bodyParser.json());
 const Pool = require("pg").Pool;
 const pool = new Pool({
   user: "postgres",
-  host: "localhost",
+  host: "https://unusual-slug-pullover.cyclic.app/",
   database: "ice_creams",
   password: "Th$Beebies2809",
   port: 5432,

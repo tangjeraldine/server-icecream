@@ -1,7 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const port = 3000;
+const PORT = process.env.PORT ?? 3000;
 const IceCreamController = require("./Controllers/IceCreamController");
 
 app.use(cors());
@@ -14,14 +15,14 @@ app.get("/", (req, res) => {
 const Pool = require("pg").Pool;
 const pool = new Pool({
   user: "postgres",
-  host: "localhost",
+  host: "https://unusual-slug-pullover.cyclic.app/",
   database: "ice_creams",
   password: "Th$Beebies2809",
   port: 5432,
 });
 
-app.listen(port, () => {
-  console.log(`App running on port ${port}.`);
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}.`);
 });
 
 // const { Client } = require("pg");
