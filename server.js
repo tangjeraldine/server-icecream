@@ -12,20 +12,45 @@ app.use("/route", IceCreamController);
 app.get("/", (req, res) => {
   res.json({ info: "Node.js, Express, and Postgres API" });
 });
-const Pool = require("pg").Pool;
+// const Pool = require("pg").Pool;
+// const pool = new Pool({
+//   user: "postgres",
+//   host: "localhost",
+//   database: "ice_creams",
+//   password: "Th$Beebies2809",
+//   port: 5432,
+// });
+
+const { Pool, Client } = require("pg");
+const connectionString =
+  "postgresql://postgres:Th$Beebies2809@localhost:5432/ice_creams";
 const pool = new Pool({
-  user: "postgres",
-  host: "https://unusual-slug-pullover.cyclic.app/",
-  database: "ice_creams",
-  password: "Th$Beebies2809",
-  port: 5432,
+  connectionString,
+});
+// pool.query("SELECT NOW()", (err, res) => {
+//   console.log(err, res);
+//   pool.end();
+// });
+
+app.get("/allicecream", async (req, res) => {
+  try {
+    const allIceCreams = await pool.query("SELECT * FROM ice_creams");
+    res.status(200).json(allIceCreams.rows);
+    pool.end();
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
-app.listen(PORT, () => {
-  console.log(`App running on port ${PORT}.`);
-});
+// const client = new Client({
+//   connectionString,
+// });
+// client.connect();
+// client.query("SELECT NOW()", (err, res) => {
+//   console.log(err, res);
+//   client.end();
+// });
 
-// const { Client } = require("pg");
 // const client = new Client();
 
 // const data = async () => {
@@ -37,6 +62,10 @@ app.listen(PORT, () => {
 //   await client.end();
 // };
 // data();
+
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}.`);
+});
 
 //! SQLite Purposes, in case your postgres doesn't connect:
 // const sqlite3 = require("sqlite3").verbose();

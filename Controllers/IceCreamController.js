@@ -4,13 +4,20 @@ const bodyParser = require("body-parser");
 
 router.use(bodyParser.json());
 
-const Pool = require("pg").Pool;
+// const Pool = require("pg").Pool;
+// const pool = new Pool({
+//   user: "postgres",
+//   host: "localhost",
+//   database: "ice_creams",
+//   password: "Th$Beebies2809",
+//   port: 5432,
+// });
+
+const { Pool, Client } = require("pg");
+const connectionString =
+  "postgresql://postgres:Th$Beebies2809@localhost:5432/ice_creams";
 const pool = new Pool({
-  user: "postgres",
-  host: "https://unusual-slug-pullover.cyclic.app/",
-  database: "ice_creams",
-  password: "Th$Beebies2809",
-  port: 5432,
+  connectionString,
 });
 
 //? Getting the whole list of ice creams to show
@@ -31,10 +38,25 @@ router.get("/plain", (req, res) => {
       if (error) {
         throw error;
       }
-      res.send(results);
+      res.send(results.rows[0]);
       //   res.send(results.rows[0]);
     }
   );
+});
+
+//? Getting the ice cream item from ice_creams where the name is query
+router.get("/search", async (req, res) => {
+  const { name } = req.query;
+  try {
+    const searchIceCream = await pool.query(
+      "SELECT * FROM ice_creams WHERE name = $1",
+      [name]
+    );
+    res.status(200).json(searchIceCream.rows[0]);
+    //   res.send(results.rows[0]);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 //? Getting the ice cream by id
