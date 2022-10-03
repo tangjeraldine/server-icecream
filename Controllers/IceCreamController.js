@@ -46,14 +46,15 @@ router.get("/plain", (req, res) => {
 
 //? Getting the ice cream item from ice_creams where the name is query
 router.get("/search", async (req, res) => {
-  const { name } = req.query;
+  const name = req.query.name;
   try {
     const searchIceCream = await pool.query(
       "SELECT * FROM ice_creams WHERE name = $1",
       [name]
     );
     res.status(200).json(searchIceCream.rows[0]);
-    //   res.send(results.rows[0]);
+    // res.send(results.rows[0]);
+    // res.json({ name });
   } catch (error) {
     res.status(500).send(error);
   }
