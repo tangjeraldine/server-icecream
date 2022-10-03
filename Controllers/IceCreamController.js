@@ -15,7 +15,7 @@ router.use(bodyParser.json());
 
 const { Pool, Client } = require("pg");
 const connectionString =
-  "postgresql://postgres:Th$Beebies2809@localhost:5432/ice_creams";
+  "postgres://pwddrxwa:d7fNZo35tih9nkXrVRdwPI-hF3jonNhN@tiny.db.elephantsql.com/pwddrxwa";
 const pool = new Pool({
   connectionString,
 });
