@@ -33,7 +33,7 @@ router.get("/allicecream", async (req, res) => {
 //? Getting the ice cream item from ice_creams where the name is Plain
 router.get("/plain", (req, res) => {
   pool.query(
-    "SELECT * FROM ice_creams WHERE name = 'Plain'",
+    "SELECT * FROM ice_creams WHERE description = 'Plain'",
     (error, results) => {
       if (error) {
         throw error;
