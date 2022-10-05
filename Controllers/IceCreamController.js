@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
+const db = require("../db/db");
 
 router.use(bodyParser.json());
 
@@ -13,17 +14,17 @@ router.use(bodyParser.json());
 //   port: 5432,
 // });
 
-const { Pool, Client } = require("pg");
-const connectionString =
-  "postgres://pwddrxwa:d7fNZo35tih9nkXrVRdwPI-hF3jonNhN@tiny.db.elephantsql.com/pwddrxwa";
-const pool = new Pool({
-  connectionString,
-});
+// const { Pool, Client } = require("pg");
+// const connectionString =
+//   "postgres://pwddrxwa:d7fNZo35tih9nkXrVRdwPI-hF3jonNhN@tiny.db.elephantsql.com/pwddrxwa";
+// const pool = new Pool({
+//   connectionString,
+// });
 
 //? Getting the whole list of ice creams to show
 router.get("/allicecream", async (req, res) => {
   try {
-    const allIceCreams = await pool.query("SELECT * FROM ice_creams");
+    const allIceCreams = await db("SELECT * FROM ice_creams");
     res.status(200).json(allIceCreams.rows);
   } catch (error) {
     res.status(500).send(error);
@@ -32,7 +33,7 @@ router.get("/allicecream", async (req, res) => {
 
 //? Getting the ice cream item from ice_creams where the name is Plain
 router.get("/plain", (req, res) => {
-  pool.query(
+  db(
     "SELECT * FROM ice_creams WHERE description = 'Plain'",
     (error, results) => {
       if (error) {
@@ -48,7 +49,7 @@ router.get("/plain", (req, res) => {
 router.get("/search", async (req, res) => {
   const name = req.query.name;
   try {
-    const searchIceCream = await pool.query(
+    const searchIceCream = await db(
       "SELECT * FROM ice_creams WHERE name = $1",
       [name]
     );
@@ -64,10 +65,9 @@ router.get("/search", async (req, res) => {
 router.get("/allicecream/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const thisIceCream = await pool.query(
-      "SELECT * FROM ice_creams WHERE id = $1",
-      [id]
-    );
+    const thisIceCream = await db("SELECT * FROM ice_creams WHERE id = $1", [
+      id,
+    ]);
     res.status(200).json(thisIceCream.rows[0]);
   } catch (error) {
     res.status(500).send(error);
@@ -89,7 +89,7 @@ router.get("/allicecream/:id", async (req, res) => {
 router.post("/newicecream", async (req, res) => {
   try {
     const { name, pints, has_nuts } = req.body;
-    const newIceCream = await pool.query(
+    const newIceCream = await db(
       "INSERT INTO ice_creams (name, pints, has_nuts) VALUES ($1, $2, $3)",
       [name, pints, has_nuts]
     );
@@ -104,7 +104,7 @@ router.put("/editicecream/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { name, pints, has_nuts } = req.body;
-    const editIceCream = await pool.query(
+    const editIceCream = await db(
       "UPDATE ice_creams SET name =$1, pints=$2, has_nuts =$3 WHERE id=$4",
       [name, pints, has_nuts, id]
     );
@@ -118,10 +118,7 @@ router.put("/editicecream/:id", async (req, res) => {
 router.delete("/deleteicecream/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteIceCream = await pool.query(
-      "DELETE FROM ice_creams WHERE id=$1",
-      [id]
-    );
+    const deleteIceCream = await db("DELETE FROM ice_creams WHERE id=$1", [id]);
     res.status(200).json("Ice cream was successfully deleted!");
   } catch (error) {
     res.status(500).send(error);

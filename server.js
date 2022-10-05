@@ -1,4 +1,5 @@
 require("dotenv").config();
+const db = require("./db/db");
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -21,12 +22,12 @@ app.get("/", (req, res) => {
 //   port: 5432,
 // });
 
-const { Pool, Client } = require("pg");
-const connectionString =
-  "postgres://pwddrxwa:d7fNZo35tih9nkXrVRdwPI-hF3jonNhN@tiny.db.elephantsql.com/pwddrxwa";
-const pool = new Pool({
-  connectionString,
-});
+// const { Pool, Client } = require("pg");
+// const connectionString =
+//   "postgres://pwddrxwa:d7fNZo35tih9nkXrVRdwPI-hF3jonNhN@tiny.db.elephantsql.com/pwddrxwa";
+// const pool = new Pool({
+//   connectionString,
+// });
 // pool.query("SELECT NOW()", (err, res) => {
 //   console.log(err, res);
 //   pool.end();
@@ -34,7 +35,7 @@ const pool = new Pool({
 
 app.get("/allicecream", async (req, res) => {
   try {
-    const allIceCreams = await pool.query("SELECT * FROM ice_creams");
+    const allIceCreams = await db("SELECT * FROM ice_creams");
     res.status(200).json(allIceCreams.rows);
     pool.end();
   } catch (error) {
